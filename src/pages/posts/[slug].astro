@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+---
+
+<Layout
+  title={`${post.data.title} | Climate Food Daily`}
+  description={post.data.summary}
+>
+  <article class="max-w-3xl mx-auto px-6 pt-12 pb-16">
+    <div class="font-mono text-xs uppercase tracking-widest text-muted mb-3">
+      {formatDate(post.data.date)}
+    </div>
+    <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight font-semibold mb-5">
+      {post.data.title}
+    </h1>
+    <p class="text-lg md:text-xl text-ink/70 leading-relaxed mb-10 font-serif">
+      {post.data.summary}
+    </p>
+    <div class="prose-custom">
+      <Content />
+    </div>
+    <div class="mt-12 pt-6 border-t border-rule font-mono text-xs">
+      <a href="/" class="text-muted hover:text-accent transition-colors">← Back to latest</a>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+export interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Climate Food Daily',
+  description = 'A daily round-up of agri-tech and food-tech stories that matter for climate.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="border-b border-rule">
+      <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="/" class="font-serif text-xl md:text-2xl tracking-tight font-semibold">
+          Climate <span class="text-accent">Food</span> Daily
+        </a>
+        <nav class="font-mono text-xs uppercase tracking-wider text-muted">
+          <a href="/" class="hover:text-ink transition-colors">Latest</a>
+          <span class="mx-2 text-rule">/</span>
+          <a href="#archive" class="hover:text-ink transition-colors">Archive</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-rule mt-16">
+      <div class="max-w-3xl mx-auto px-6 py-8 font-mono text-xs text-muted flex flex-col sm:flex-row justify-between gap-2">
+        <span>Climate Food Daily, built by Henry Blanchard</span>
+        <span>Updated each morning by an AI routine</span>
+      </div>
+    </footer>
+  </body>
+</html>

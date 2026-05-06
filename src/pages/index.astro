@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const latest = posts[0];
+const Content = latest ? (await latest.render()).Content : null;
+const earlier = posts.slice(1);
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+---
+
+<Layout
+  title={latest ? `${latest.data.title} | Climate Food Daily` : 'Climate Food Daily'}
+  description={latest?.data.summary}
+>
+  <article class="max-w-3xl mx-auto px-6 pt-12 pb-8">
+    {latest ? (
+      <>
+        <div class="font-mono text-xs uppercase tracking-widest text-muted mb-3">
+          {formatDate(latest.data.date)} &middot; Issue {posts.length}
+        </div>
+        <h1 class="font-serif text-4xl md:text-5xl leading-tight tracking-tight font-semibold mb-5">
+          {latest.data.title}
+        </h1>
+        <p class="text-lg md:text-xl text-ink/70 leading-relaxed mb-10 font-serif">
+          {latest.data.summary}
+        </p>
+        <div class="prose-custom">
+          {Content && <Content />}
+        </div>
+      </>
+    ) : (
+      <div class="py-20 text-center">
+        <p class="font-serif text-2xl mb-3">No issues yet.</p>
+        <p class="text-muted">The first edition will land tomorrow morning.</p>
+      </div>
+    )}
+  </article>
+
+  {earlier.length > 0 && (
+    <section id="archive" class="max-w-3xl mx-auto px-6 py-10 border-t border-rule">
+      <h2 class="font-mono text-xs uppercase tracking-widest text-muted mb-6">Earlier issues</h2>
+      <ul class="space-y-5">
+        {earlier.map((post) => (
+          <li>
+            <a href={`/posts/${post.slug}/`} class="group block">
+              <div class="font-mono text-xs text-muted">{formatDate(post.data.date)}</div>
+              <div class="font-serif text-lg md:text-xl mt-1 group-hover:text-accent transition-colors">
+                {post.data.title}
+              </div>
+              <div class="text-sm text-ink/70 mt-1">{post.data.summary}</div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Layout>
